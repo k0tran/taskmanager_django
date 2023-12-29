@@ -1,0 +1,14 @@
+{% extends 'base_nav.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Change comment</h2>
+    <form method="post" action="{% url 'comment_update' comment.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea class="form-control" id="text" name="text" rows="3">{% if comment.text %}{{ comment.text }}{% endif %}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

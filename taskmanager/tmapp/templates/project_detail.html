@@ -1,0 +1,71 @@
+{% extends 'base_nav.html' %}
+
+{% block content2 %}
+<div class="container">
+    <h1>{{ project.title }}</h1>
+    <form class="mb-4" method="post" action="{% url 'project_detail' project.id %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter project description" {% if not is_admin %}readonly{% endif %}>{% if project.description %}{{ project.description }}{% endif %}</textarea>
+            {% if is_admin %}
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Update description</button>
+                </div>
+            {% endif %}
+        </div>
+    </form>
+    {% if is_admin %}
+    <form class="mb-4" method="post" action="{% url 'project_delete' project.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Project</button>
+    </form>
+    {% endif %}
+    <form class="mb-4" method="get" action="{% url 'project_members' project.id %}">
+        <button type="submit" class="btn btn-primary">View Members</button>
+    </form>
+    <h1>Tasks</h1>
+    <form class="mb-4" method="post" action="{% url 'task_create' project.id %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" class="form-control" id="title" name="title" placeholder="Enter task title">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Add Task</button>
+            </div>
+        </div>
+    </form>
+    <ul class="list-group project-list">
+        {% for task in tasks %}
+        <li class="list-group-item d-flex align-items-center">
+            <div class="mr-auto">
+                <a class="navbar-link" style="color: {% if task.priority == priorities.LOW %}blue{% elif task.priority == priorities.MEDIUM %}yellow{% elif task.priority == priorities.HIGH %}red{% endif %};" href="{% url 'task_detail' task.id %}">{{ task.title }}{% if task.assignee %} (@{{ task.assignee.username }}){% endif %}</a>
+            </div>
+            <div style="margin-left: auto;">
+                <form method="post" action="{% url 'task_update_status' task.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="{{ statuses.COMPLETED }}">
+                    <button type="submit" class="btn btn-primary">Complete</button>
+                </form>
+                <form method="post" action="{% url 'task_update_status' task.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="{{ statuses.ARCHIVED }}">
+                    <button type="submit" class="btn btn-warning">Archive</button>
+                </form>
+                <form method="post" action="{% url 'task_delete' task.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No tasks found</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <form class="mb-4" method="get" action="{% url 'completed_tasks' project.id %}">
+        <button type="submit" class="btn btn-primary">Veiw completed tasks</button>
+    </form>
+    <form class="mb-4" method="get" action="{% url 'archieved_tasks' project.id %}">
+        <button type="submit" class="btn btn-warning">Veiw archieved tasks</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base_nav.html' %}
+
+{% block content2 %}
+<div class="container">
+    <h1>{{ project.title }}</h1>
+    <ul class="list-group project-list">
+        {% for role in roles %}
+        <li class="list-group-item d-flex align-items-center" style="background-color: #495057;">
+            <span class="mr-auto" style="color: #fff;">{{ role.user.first_name }} {{ role.user.last_name }} (@{{ role.user.username }})</span>
+            <form class="mr-2" method="post" action="{% url 'members_update' project.id %}">
+                {% csrf_token %}
+                <select name="role" class="form-control" style="background-color: #495057; color: #fff; border-color: #495057; border-radius: 8px; min-height: 30px;" {% if not is_admin %}readonly{% endif %}>
+                    <option value="{{ roles_constants.ADMIN }}" {% if role.role == roles_constants.ADMIN %}selected{% endif %}>Admin</option>
+                    <option value="{{ roles_constants.RW }}" {% if role.role == roles_constants.RW %}selected{% endif %}>Read-Write</option>
+                    <option value="{{ roles_constants.READONLY }}" {% if role.role == roles_constants.READONLY %}selected{% endif %}>Read-only</option>
+                </select>
+                <input type="hidden" name="username" value="{{ role.user.username }}">
+                {% if is_admin %}
+                    <button type="submit" class="btn btn-primary">Update role</button>
+                {% endif %}
+            </form>
+            {% if is_admin %}
+                <form method="post" action="{% url 'members_delete' project.id %}" style="display: flex; align-items: center;">
+                    {% csrf_token %}
+                    <input type="hidden" name="username" value="{{ role.user.username }}">
+                    <button type="submit" class="btn btn-danger" style="margin-left: 10px;">Delete member</button>
+                </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% if is_admin %}
+    <br>
+    <form class="mb-4" method="post" action="{% url 'members_update' project.id %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" class="form-control mr-2" name="username" placeholder="Enter username">
+            <select name="role" class="form-control mr-2">
+                <option value="{{ roles_constants.ADMIN }}">Admin</option>
+                <option value="{{ roles_constants.RW }}">Read-Write</option>
+                <option value="{{ roles_constants.READONLY }}" selected>Read-only</option>
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Add user</button>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base_nav.html' %}
+
+{% block content2 %}
+<div class="container">
+    <h2>Completed tasks</h2>
+    <ul class="list-group project-list">
+        {% for task in tasks %}
+        <li class="list-group-item d-flex align-items-center" style="background-color: #495057;">
+            <div class="mr-auto">
+                <a class="navbar-link" href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
+            </div>
+            <div style="margin-left: auto;">
+                <form method="post" action="{% url 'task_update_status' task.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="unstatus" value="{{ statuses.COMPLETED }}">
+                    <button type="submit" class="btn btn-primary">Uncomplete</button>
+                </form>
+            </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No tasks found</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <form class="mb-4" method="get" action="{% url 'project_detail' project.id %}">
+        <button type="submit" class="btn btn-primary">Back to project</button>
+    </form>
+</div>
+{% endblock %}

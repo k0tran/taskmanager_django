@@ -1,0 +1,83 @@
+@startuml tm
+
+hide circle
+
+skinparam linetype ortho
+hide methods
+
+' Пользователь сервиса
+entity "User" as user {
+    * **id** : number
+    * username : text
+    * password : text
+    * email : text
+}
+
+' Проект, в котором есть набор задач
+entity "Project" as project {
+    * **id** : number
+    * title : text
+    * description : ?text <<Описание проекта>>
+}
+
+' Роль пользователя в проекте
+' Предыдущая роль включает полномочия последующих
+entity "enum UserRole" as role {
+    * ADMIN <<Может приглашать новых юзеров и выгонять старых>>
+    * RW <<Создает и управляет задачами>>
+    * READONLY <<Только комментирует>>
+}
+
+' Полномочия юзера в проекте
+entity "ProjectRoles" as roles {
+    * **pid** : number <<id проекта>>
+    * **uid** : number <<id пользователя>>
+    * role : role
+}
+
+roles -- role
+roles }o-- project
+roles }o-- user
+
+' Насколько данная задача важна
+entity "Enum TaskPriority" as priority {
+    * LOW
+    * MEDIUM
+    * HIGH
+}
+
+' Задача может существовать, быть завершенной или заархивированной
+entity "Enum Status" as status {
+    * INPROGRESS
+    * COMPLETED
+    * ARCHIVED
+}
+
+' Главный класс задачи
+entity "Task" as task {
+    * **id**: number
+    * title: text
+    * description: ?String
+    * status: Status
+    * assignee: ?User
+    * priority: ?Priority
+}
+
+task -- status
+task -- priority
+task --o user
+
+' Комментарии под заданием
+entity "Comment" as comment {
+    * **id** : number
+    * **task_id** : number 
+    * text : text
+    * author : User
+    * changed : timestamp
+    * edited : bool
+}
+
+comment }o-- task
+comment -- user
+
+@enduml

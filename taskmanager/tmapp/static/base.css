@@ -1,0 +1,84 @@
+body {
+    background-color: #212529;
+    color: #fff;
+}
+
+.form-container {
+    background-color: #343a40;
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.form-container h2 {
+    margin-bottom: 30px;
+}
+
+form .form-control {
+    background-color: #495057;
+    color: #fff;
+    border-color: #495057;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    min-height: 30px;
+}
+
+form .form-control:focus {
+    background-color: #495057;
+    color: #fff;
+    border-color: #3bc9db;
+    border-radius: 8px;
+    box-shadow: none;
+    min-height: 30px;
+}
+
+.form-control:read-only {
+    background-color: #495057;
+    color: #fff;
+}
+
+.form-control:read-only::placeholder {
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #3bc9db;
+    border-color: #3bc9db;
+}
+
+.btn-primary:hover {
+    background-color: #34b2c2;
+    border-color: #34b2c2;
+}
+
+.navbar {
+    background-color: #343a40;
+}
+
+.navbar-link {
+    color: #fff;
+}
+
+.navbar-username {
+    color: #fff;
+    margin-right: 10px;
+}
+
+.container {
+    margin-top: 30px;
+}
+
+.project-list li {
+    margin-bottom: 10px;
+    background-color: #495057;
+}
+
+.list-group {
+    background-color: #495057;
+}
+
+.card-body {
+    background-color: #495057;
+}
+

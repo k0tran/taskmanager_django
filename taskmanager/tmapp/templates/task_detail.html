@@ -1,0 +1,73 @@
+{% extends 'base_nav.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Edit Task</h1>
+    <form method="post" action="{% url 'task_detail' task.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="5">{% if task.description %}{{ task.description }}{% endif %}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="assignee">Assignee</label>
+            <select class="form-control" id="assignee" name="assignee">
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if task.assignee.id == user.id %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="priority">Priority</label>
+            <select class="form-control" id="priority" name="priority">
+                <option value="{{ priorities.LOW }}" {% if task.priority == priorities.LOW %}selected{% endif %}>Low</option>
+                <option value="{{ priorities.MEDIUM }}" {% if task.priority == priorities.MEDIUM %}selected{% endif %}>Medium</option>
+                <option value="{{ priorities.HIGH }}" {% if task.priority == priorities.HIGH %}selected{% endif %}>High</option>
+                <option value="{{ priorities.NOT_SET }}" {% if task.priority == priorities.NOT_SET %}selected{% endif %}>Not set</option>
+            </select>
+        </div>
+        {% if permission %}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        {% endif %}
+    </form>
+</div>
+
+<div class="container mt-4">
+    <h2>Comments</h2>
+    {% for comment in comments %}
+    <div class="card my-2">
+        <div class="card-body">
+            <h4>{{ comment.author.first_name }} {{ comment.author.last_name }} (@{{ comment.author.username }}) {% if comment.edited %}Edited{% else %}Created{% endif %} {{ comment.changed }}</h4>
+            <p>{{ comment.text }}</p>
+            {% if comment.author == user %}
+            <div class="mt-2">
+                <a href="{% url 'comment_update' comment.id %}" class="btn btn-primary btn-sm">Edit</a>
+                <form method="post" action="{% url 'comment_delete' comment.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p>No comments yet.</p>
+    {% endfor %}
+</div>
+
+<div class="container mt-4">
+    <h2>Add Comment</h2>
+    <form method="post" action="{% url 'comment_create' task.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

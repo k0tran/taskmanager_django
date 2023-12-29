@@ -1,0 +1,25 @@
+{% extends 'base_nav.html' %}
+
+{% block content2 %}
+<div class="container">
+    <h1>Projects</h1>
+    <form class="mb-4" method="post" action="{% url 'projects' %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" class="form-control" id="title" name="title" placeholder="Enter a project title">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Add Project</button>
+            </div>
+        </div>
+    </form>
+    <ul class="list-group project-list">
+        {% for project in projects %}
+        <li class="list-group-item">
+            <a class="navbar-link" href="{% url 'project_detail' project.id %}">{{ project.title }}</a>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No projects available.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
